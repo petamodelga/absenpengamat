@@ -20,7 +20,7 @@
 
                     // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
                     if (accuracy > 100) {
-                        alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).\");
+                        alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).");
                         return;
                     }
 
@@ -46,7 +46,9 @@
                         mode: "no-cors"
                     }).then(() => {
                         alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
-                        window.location.href = googleFormRedirect; // Redirect ke Google Form
+                        setTimeout(() => {
+                            window.location.href = googleFormRedirect; // Redirect ke Google Form setelah delay
+                        }, 1000);
                     }).catch(error => {
                         console.error("Error submitting form:", error);
                     });
