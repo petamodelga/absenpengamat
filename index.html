@@ -14,7 +14,7 @@
 
                     // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
                     if (accuracy > 100) {
-                        alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).\");
+                        alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).");
                         return;
                     }
 
@@ -39,7 +39,7 @@
                     window.location.href = formURL;
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
-                }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+                });
             } else {
                 alert("Geolocation tidak didukung di perangkat ini.");
             }
