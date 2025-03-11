@@ -12,6 +12,9 @@
 
                     console.log("Latitude: " + lat + ", Longitude: " + lng + ", Accuracy: " + accuracy);
 
+                    // Tampilkan koordinat di halaman untuk verifikasi
+                    document.getElementById("locationDisplay").innerText = "Lokasi: " + lat + ", " + lng + " (Akurasi: " + accuracy + "m)";
+
                     // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
                     if (accuracy > 100) {
                         alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).");
@@ -35,7 +38,7 @@
                     });
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
-                }, { enableHighAccuracy: true });
+                }, { enableHighAccuracy: true, timeout: 10000 });
             } else {
                 alert("Geolocation tidak didukung di perangkat ini.");
             }
@@ -44,5 +47,6 @@
 </head>
 <body onload="getLocation()">
     <h2>Mohon tunggu, sedang mendapatkan lokasi...</h2>
+    <p id="locationDisplay">Mengambil koordinat...</p>
 </body>
 </html>
