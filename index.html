@@ -3,7 +3,13 @@
 <head>
     <title>Absensi Otomatis - Anti Fake GPS</title>
     <script>
+        function clearLocationCache() {
+            navigator.geolocation.getCurrentPosition(() => {}, () => {}, { timeout: 0 });
+        }
+
         function getLocation() {
+            clearLocationCache(); // Hapus cache lokasi sebelum mengambil data baru
+            
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     var lat = position.coords.latitude;
@@ -12,14 +18,20 @@
 
                     console.log("Latitude: " + lat + ", Longitude: " + lng + ", Accuracy: " + accuracy);
 
-                    // Tampilkan koordinat di halaman untuk verifikasi
-                    document.getElementById("locationDisplay").innerText = "Lokasi: " + lat + ", " + lng + " (Akurasi: " + accuracy + "m)";
-
                     // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
                     if (accuracy > 100) {
                         alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).");
                         return;
                     }
+
+                    // Ambil lokasi dari layanan IP sebagai alternatif
+                    fetch('https://ipinfo.io/json?token=c9b541018d8ea0')
+                        .then(response => response.json())
+                        .then(data => {
+                            var ipLocation = data.loc;
+                            console.log("Lokasi berdasarkan IP:", ipLocation);
+                        })
+                        .catch(error => console.error("Gagal mendapatkan lokasi dari IPInfo.io:", error));
 
                     // Ganti ENTRY_ID dengan ID Google Form Anda
                     var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
@@ -47,6 +59,5 @@
 </head>
 <body onload="getLocation()">
     <h2>Mohon tunggu, sedang mendapatkan lokasi...</h2>
-    <p id="locationDisplay">Mengambil koordinat...</p>
 </body>
 </html>
