@@ -23,14 +23,6 @@
                     var ipLat = ipLocation.lat;
                     var ipLng = ipLocation.lng;
 
-                    var distance = calculateDistance(lat, lng, ipLat, ipLng);
-                    
-                    // Jika lokasi GPS berbeda lebih dari 10km dari lokasi IP, kemungkinan Fake GPS
-                    if (distance > 10) {
-                        alert("Deteksi Fake GPS: Lokasi tidak sesuai dengan IP Anda.");
-                        return;
-                    }
-
                     // Ganti ENTRY_ID dengan ID Google Form Anda
                     var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform?usp=pp_url&entry.1305956055=" + lat + "," + lng;
 
@@ -56,18 +48,6 @@
                 console.log("Gagal mendapatkan lokasi dari IP:", error);
                 return { lat: 0, lng: 0 };
             }
-        }
-
-        // Fungsi untuk menghitung jarak antara dua koordinat (dalam km)
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            var R = 6371; // Radius Bumi dalam km
-            var dLat = (lat2 - lat1) * (Math.PI / 180);
-            var dLon = (lon2 - lon1) * (Math.PI / 180);
-            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c; // Jarak dalam km
         }
     </script>
 </head>
