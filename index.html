@@ -1,27 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Absensi Otomatis - Anti Fake GPS</title>
+    <title>Absensi Otomatis - GPS</title>
     <script>
         function getLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async function(position) {
+                navigator.geolocation.getCurrentPosition(function(position) {
                     var lat = position.coords.latitude;
                     var lng = position.coords.longitude;
                     var accuracy = position.coords.accuracy;
 
                     console.log("Latitude: " + lat + ", Longitude: " + lng + ", Accuracy: " + accuracy);
 
-                    // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
+                    // Cek akurasi lokasi (pastikan cukup akurat)
                     if (accuracy > 100) {
                         alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).");
                         return;
                     }
-
-                    // Bandingkan dengan IP Address (gunakan layanan eksternal)
-                    var ipLocation = await getLocationFromIP();
-                    var ipLat = ipLocation.lat;
-                    var ipLng = ipLocation.lng;
 
                     // Ganti ENTRY_ID dengan ID Google Form Anda
                     var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform?usp=pp_url&entry.1305956055=" + lat + "," + lng;
@@ -31,22 +26,9 @@
                     window.location.href = formURL;
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
-                });
+                }, { enableHighAccuracy: true });
             } else {
                 alert("Geolocation tidak didukung di perangkat ini.");
-            }
-        }
-
-        // Fungsi untuk mengambil lokasi berdasarkan IP
-        async function getLocationFromIP() {
-            try {
-                let response = await fetch("https://ipinfo.io/json?token=c9b541018d8ea0");
-                let data = await response.json();
-                let loc = data.loc.split(",");
-                return { lat: parseFloat(loc[0]), lng: parseFloat(loc[1]) };
-            } catch (error) {
-                console.log("Gagal mendapatkan lokasi dari IP:", error);
-                return { lat: 0, lng: 0 };
             }
         }
     </script>
