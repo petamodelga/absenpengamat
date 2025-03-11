@@ -33,21 +33,16 @@
                         })
                         .catch(error => console.error("Gagal mendapatkan lokasi dari IPInfo.io:", error));
 
-                    // Ganti ENTRY_ID dengan ID Google Form Anda
-                    var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
-                    var formData = new FormData();
-                    formData.append("entry.1305956055", lat + "," + lng);
+                    // Ganti FORM_ID dan ENTRY_ID dengan milik Anda
+                    var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
+                    var entryID = "1305956055";
 
-                    // Kirim data ke Google Form
-                    fetch(formURL, {
-                        method: "POST",
-                        body: formData,
-                        mode: "no-cors"
-                    }).then(() => {
-                        alert("Lokasi berhasil dikirim!");
-                    }).catch(error => {
-                        console.error("Error submitting form:", error);
-                    });
+                    // Redirect ke Google Form dengan parameter lokasi
+                    var redirectURL = `${formURL}?entry.${entryID}=${lat},${lng}`;
+                    
+                    alert("Lokasi berhasil dikirim! Anda akan diarahkan ke formulir.");
+                    window.location.href = redirectURL; // Arahkan pengguna ke Google Form
+
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, { enableHighAccuracy: true, timeout: 10000 });
