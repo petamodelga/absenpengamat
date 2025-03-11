@@ -11,7 +11,7 @@
             clearLocationCache(); // Hapus cache lokasi sebelum mengambil data baru
             
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async function(position) {
+                navigator.geolocation.getCurrentPosition(function(position) {
                     var lat = position.coords.latitude;
                     var lng = position.coords.longitude;
                     var accuracy = position.coords.accuracy;
@@ -25,28 +25,20 @@
                     }
 
                     // Ganti ENTRY_ID dengan ID Google Form Anda
-                    var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
-                    var googleFormRedirect = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
+                    var form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
+
+                    var input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "entry.1393706013";
+                    input.value = lat + "," + lng;
                     
-                    // Data yang akan dikirim
-                    var formData = new FormData();
-                    formData.append("entry.1393706013", lat + "," + lng);
+                    form.appendChild(input);
+                    document.body.appendChild(form);
                     
-                    try {
-                        let response = await fetch(formURL, {
-                            method: "POST",
-                            mode: "no-cors",
-                            body: formData
-                        });
-                        
-                        alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
-                        setTimeout(() => {
-                            window.location.href = googleFormRedirect;
-                        }, 1500);
-                    } catch (error) {
-                        alert("Gagal mengirim data: " + error.message);
-                    }
-                    
+                    alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
+                    form.submit();
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
