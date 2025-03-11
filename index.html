@@ -35,6 +35,7 @@
 
                     // Ganti ENTRY_ID dengan ID Google Form Anda
                     var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
+                    var googleFormRedirect = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
                     var formData = new FormData();
                     formData.append("entry.1393706013", lat + "," + lng);
 
@@ -44,7 +45,8 @@
                         body: formData,
                         mode: "no-cors"
                     }).then(() => {
-                        alert("Lokasi berhasil dikirim!");
+                        alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
+                        window.location.href = googleFormRedirect; // Redirect ke Google Form
                     }).catch(error => {
                         console.error("Error submitting form:", error);
                     });
