@@ -24,17 +24,25 @@
                         return;
                     }
 
-                    // Ganti FORM_ID dan ENTRY_ID dengan milik Anda
-                    var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
+                    // Ganti FORM_ID dan ENTRY_ID sesuai dengan Google Form Anda
+                    var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
                     var entryID = "1305956055";
 
-                    // Redirect ke Google Form dengan parameter lokasi
-                    var redirectURL = `${formURL}?entry.${entryID}=${lat},${lng}`;
-                    
-                    console.log("Mengirim lokasi ke:", redirectURL);
-                    alert("Lokasi berhasil dikirim! Anda akan diarahkan ke formulir.");
-                    
-                    window.location.href = redirectURL; // Arahkan pengguna ke Google Form
+                    // Buat form secara dinamis
+                    var form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = formURL;
+
+                    var inputLocation = document.createElement("input");
+                    inputLocation.type = "hidden";
+                    inputLocation.name = "entry." + entryID;
+                    inputLocation.value = lat + "," + lng;
+
+                    form.appendChild(inputLocation);
+                    document.body.appendChild(form);
+
+                    alert("Lokasi berhasil dikirim! Formulir akan segera dikirim.");
+                    form.submit(); // Kirim data
 
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
