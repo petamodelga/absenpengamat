@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Absensi Otomatis - Anti Fake GPS</title>
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async function(position) {
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+                    var accuracy = position.coords.accuracy;
+
+                    // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 50m)
+                    if (accuracy > 50) {
+                        alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).");
+                        return;
+                    }
+
+                    // Bandingkan dengan IP Address (gunakan layanan eksternal)
+                    var ipLocation = await getLocationFromIP();
+                    var ipLat = ipLocation.lat;
+                    var ipLng = ipLocation.lng;
+
+                    var distance = calculateDistance(lat, lng, ipLat, ipLng);
+                    
+                    // Jika lokasi GPS berbeda lebih dari 10km dari lokasi IP, kemungkinan Fake GPS
+                    if (distance > 10) {
+                        alert("Deteksi Fake GPS: Lokasi tidak sesuai dengan IP Anda.");
+                        return;
+                    }
+
+                    // Ganti ENTRY_ID dengan ID Google Form Anda
+                    var formURL = "https://docs.google.com/forms/d/e/1yVM7WotzTh9l0fHAqZzH-hxtA7zwXXJRKU3cnq75SM4/viewform?usp=pp_url&entry.1602409464=" + lat + "," + lng;
+
+                    // Redirect ke Google Form dengan lokasi otomatis
+                    window.location.href = formURL;
+                }, function(error) {
+                    alert("Gagal mendapatkan lokasi: " + error.message);
+                });
+            } else {
+                alert("Geolocation tidak didukung di perangkat ini.");
+            }
+        }
+
+        // Fungsi untuk mengambil lokasi berdasarkan IP
+        async function getLocationFromIP() {
+            try {
+                let response = await fetch("https://ipinfo.io/json?token=c9b541018d8ea0");
+                let data = await response.json();
+                let loc = data.loc.split(",");
+                return { lat: parseFloat(loc[0]), lng: parseFloat(loc[1]) };
+            } catch (error) {
+                console.log("Gagal mendapatkan lokasi dari IP:", error);
+                return { lat: 0, lng: 0 };
+            }
+        }
+
+        // Fungsi untuk menghitung jarak antara dua koordinat (dalam km)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            var R = 6371; // Radius Bumi dalam km
+            var dLat = (lat2 - lat1) * (Math.PI / 180);
+            var dLon = (lon2 - lon1) * (Math.PI / 180);
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; // Jarak dalam km
+        }
+    </script>
+</head>
+<body onload="getLocation()">
+    <h2>Mohon tunggu, sedang mendapatkan lokasi...</h2>
+</body>
+</html>
