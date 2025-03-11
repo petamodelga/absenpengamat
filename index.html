@@ -24,36 +24,34 @@
                         return;
                     }
 
-                    // Ambil lokasi dari layanan IP sebagai alternatif
-                    fetch('https://ipinfo.io/json?token=c9b541018d8ea0')
-                        .then(response => response.json())
-                        .then(data => {
-                            var ipLocation = data.loc;
-                            console.log("Lokasi berdasarkan IP:", ipLocation);
-                        })
-                        .catch(error => console.error("Gagal mendapatkan lokasi dari IPInfo.io:", error));
-
                     // Ganti ENTRY_ID dengan ID Google Form Anda
                     var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
                     var googleFormRedirect = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
                     var formData = new FormData();
                     formData.append("entry.1393706013", lat + "," + lng);
 
-                    // Kirim data ke Google Form
+                    // Kirim data ke Google Form dengan metode POST
                     fetch(formURL, {
                         method: "POST",
                         body: formData,
                         mode: "no-cors"
                     }).then(() => {
+                        console.log("Data lokasi berhasil dikirim ke Google Form");
                         alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
+                        
+                        // Redirect ke Google Form setelah delay
                         setTimeout(() => {
-                            window.location.href = googleFormRedirect; // Redirect ke Google Form setelah delay
-                        }, 1000);
+                            window.location.href = googleFormRedirect;
+                        }, 1500);
                     }).catch(error => {
-                        console.error("Error submitting form:", error);
+                        console.error("Error saat mengirimkan form:", error);
+                        alert("Gagal mengirim lokasi. Silakan coba lagi.");
                     });
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
+                }, {
+                    maximumAge: 0, // Pastikan selalu mendapatkan lokasi terbaru
+                    timeout: 10000 // Beri batas waktu untuk mendapatkan lokasi
                 });
             } else {
                 alert("Geolocation tidak didukung di perangkat ini.");
