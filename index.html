@@ -24,26 +24,30 @@
                         return;
                     }
 
-                    // Ganti FORM_ID dan ENTRY_ID sesuai dengan Google Form Anda
+                    // Ambil lokasi dari layanan IP sebagai alternatif
+                    fetch('https://ipinfo.io/json?token=c9b541018d8ea0')
+                        .then(response => response.json())
+                        .then(data => {
+                            var ipLocation = data.loc;
+                            console.log("Lokasi berdasarkan IP:", ipLocation);
+                        })
+                        .catch(error => console.error("Gagal mendapatkan lokasi dari IPInfo.io:", error));
+
+                    // Ganti ENTRY_ID dengan ID Google Form Anda
                     var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
-                    var entryID = "1305956055";
+                    var formData = new FormData();
+                    formData.append("entry.1393706013", lat + "," + lng);
 
-                    // Buat form secara dinamis
-                    var form = document.createElement("form");
-                    form.method = "POST";
-                    form.action = formURL;
-
-                    var inputLocation = document.createElement("input");
-                    inputLocation.type = "hidden";
-                    inputLocation.name = "entry." + entryID;
-                    inputLocation.value = lat + "," + lng;
-
-                    form.appendChild(inputLocation);
-                    document.body.appendChild(form);
-
-                    alert("Lokasi berhasil dikirim! Formulir akan segera dikirim.");
-                    form.submit(); // Kirim data
-
+                    // Kirim data ke Google Form
+                    fetch(formURL, {
+                        method: "POST",
+                        body: formData,
+                        mode: "no-cors"
+                    }).then(() => {
+                        alert("Lokasi berhasil dikirim!");
+                    }).catch(error => {
+                        console.error("Error submitting form:", error);
+                    });
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 });
