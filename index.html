@@ -28,27 +28,29 @@
                     var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
                     var googleFormRedirect = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
                     
-                    var formData = new URLSearchParams();
-                    formData.append("entry.1393706013", lat + "," + lng);
+                    // Buat elemen form
+                    var form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = formURL;
+                    form.style.display = "none";
                     
-                    // Kirim data ke Google Form dengan metode GET
-                    var fullURL = formURL + "?" + formData.toString();
+                    // Tambahkan input untuk koordinat
+                    var input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "entry.1393706013";
+                    input.value = lat + "," + lng;
+                    form.appendChild(input);
                     
-                    fetch(fullURL, {
-                        method: "GET",
-                        mode: "no-cors"
-                    }).then(() => {
-                        console.log("Data lokasi berhasil dikirim ke Google Form");
-                        alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
-                        
-                        // Redirect ke Google Form setelah delay
-                        setTimeout(() => {
-                            window.location.href = googleFormRedirect;
-                        }, 1500);
-                    }).catch(error => {
-                        console.error("Error saat mengirimkan form:", error);
-                        alert("Gagal mengirim lokasi. Silakan coba lagi.");
-                    });
+                    document.body.appendChild(form);
+                    form.submit(); // Kirim form secara otomatis
+                    
+                    alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
+                    
+                    // Redirect ke Google Form setelah delay
+                    setTimeout(() => {
+                        window.location.href = googleFormRedirect;
+                    }, 1500);
+                    
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
