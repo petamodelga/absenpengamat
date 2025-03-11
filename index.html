@@ -10,8 +10,8 @@
                     var lng = position.coords.longitude;
                     var accuracy = position.coords.accuracy;
 
-                    // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 50m)
-                    if (accuracy > 50) {
+                    // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
+                    if (accuracy > 100) {
                         alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).");
                         return;
                     }
