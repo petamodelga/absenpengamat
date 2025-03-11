@@ -24,22 +24,12 @@
                         return;
                     }
 
-                    // Kirim data menggunakan fetch()
-                    var formData = new FormData();
-                    formData.append("entry.1393706013", lat + "," + lng);
+                    // Buat URL untuk mengisi Google Form secara otomatis
+                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse?" +
+                                   "entry.1393706013=" + encodeURIComponent(lat + "," + lng) + "&submit=Submit";
 
-                    fetch("https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse", {
-                        method: "POST",
-                        body: formData,
-                        mode: "no-cors"
-                    }).then(() => {
-                        alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
-                        setTimeout(() => {
-                            window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
-                        }, 1000);
-                    }).catch((error) => {
-                        alert("Gagal mengirim data: " + error);
-                    });
+                    alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
+                    window.location.href = formUrl;
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
