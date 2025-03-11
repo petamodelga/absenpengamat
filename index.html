@@ -27,13 +27,15 @@
                     // Ganti ENTRY_ID dengan ID Google Form Anda
                     var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
                     var googleFormRedirect = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
-                    var formData = new FormData();
+                    
+                    var formData = new URLSearchParams();
                     formData.append("entry.1393706013", lat + "," + lng);
-
-                    // Kirim data ke Google Form dengan metode POST
-                    fetch(formURL, {
-                        method: "POST",
-                        body: formData,
+                    
+                    // Kirim data ke Google Form dengan metode GET
+                    var fullURL = formURL + "?" + formData.toString();
+                    
+                    fetch(fullURL, {
+                        method: "GET",
                         mode: "no-cors"
                     }).then(() => {
                         console.log("Data lokasi berhasil dikirim ke Google Form");
