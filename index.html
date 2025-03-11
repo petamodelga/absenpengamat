@@ -20,25 +20,26 @@
 
                     // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
                     if (accuracy > 100) {
-                        alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).");
+                        alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).\nSilakan coba lagi.");
                         return;
                     }
 
-                    // Ganti ENTRY_ID dengan ID Google Form Anda
-                    var form = document.createElement("form");
-                    form.method = "POST";
-                    form.action = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
+                    // Kirim data menggunakan fetch()
+                    var formData = new FormData();
+                    formData.append("entry.1393706013", lat + "," + lng);
 
-                    var input = document.createElement("input");
-                    input.type = "hidden";
-                    input.name = "entry.1393706013";
-                    input.value = lat + "," + lng;
-                    
-                    form.appendChild(input);
-                    document.body.appendChild(form);
-                    
-                    alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
-                    form.submit();
+                    fetch("https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse", {
+                        method: "POST",
+                        body: formData,
+                        mode: "no-cors"
+                    }).then(() => {
+                        alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
+                        setTimeout(() => {
+                            window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
+                        }, 1000);
+                    }).catch((error) => {
+                        alert("Gagal mengirim data: " + error);
+                    });
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
