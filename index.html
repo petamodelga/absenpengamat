@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Absensi Otomatis - GPS</title>
+    <title>Absensi Otomatis - Anti Fake GPS</title>
     <script>
         function getLocation() {
             if (navigator.geolocation) {
@@ -12,18 +12,27 @@
 
                     console.log("Latitude: " + lat + ", Longitude: " + lng + ", Accuracy: " + accuracy);
 
-                    // Cek akurasi lokasi (pastikan cukup akurat)
+                    // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
                     if (accuracy > 100) {
                         alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).");
                         return;
                     }
 
                     // Ganti ENTRY_ID dengan ID Google Form Anda
-                    var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform?usp=pp_url&entry.1305956055=" + lat + "," + lng;
+                    var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
+                    var formData = new FormData();
+                    formData.append("entry.1305956055", lat + "," + lng);
 
-                    // Redirect ke Google Form dengan lokasi otomatis
-                    console.log("Redirecting to: " + formURL);
-                    window.location.href = formURL;
+                    // Kirim data ke Google Form
+                    fetch(formURL, {
+                        method: "POST",
+                        body: formData,
+                        mode: "no-cors"
+                    }).then(() => {
+                        alert("Lokasi berhasil dikirim!");
+                    }).catch(error => {
+                        console.error("Error submitting form:", error);
+                    });
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, { enableHighAccuracy: true });
