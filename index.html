@@ -24,9 +24,8 @@
                         return;
                     }
 
-                    // Buat URL untuk mengisi Google Form secara otomatis
-                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse?" +
-                                   "entry.1393706013=" + encodeURIComponent(lat + "," + lng) + "&submit=Submit";
+                    // Gunakan Pre-Filled URL agar lokasi tidak bisa diedit oleh pengguna
+                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform?usp=pp_url&entry.1393706013=" + encodeURIComponent(lat + "," + lng);
 
                     alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
                     window.location.href = formUrl;
