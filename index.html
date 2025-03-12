@@ -24,25 +24,14 @@
                         return;
                     }
 
-                    // Buat form tersembunyi untuk mengirim lokasi
-                    var form = document.createElement("form");
-                    form.method = "POST";
-                    form.action = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
-                    form.style.display = "none";
-
-                    var lokasiInput = document.createElement("input");
-                    lokasiInput.type = "hidden";
-                    lokasiInput.name = "entry.1393706013";
-                    lokasiInput.value = lat + ", " + lng; // Tambahkan spasi setelah koma
-                    form.appendChild(lokasiInput);
-
-                    document.body.appendChild(form);
-                    form.submit(); // Kirim otomatis
+                    // Gunakan metode GET untuk mengisi Google Form
+                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse" +
+                                   "?entry.1393706013=" + encodeURIComponent(lat + "," + lng) + "&submit=Submit";
                     
-                    // Redirect ke Google Form setelah submit
+                    // Redirect ke Google Form setelah mendapatkan lokasi
                     setTimeout(function() {
-                        window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
-                    }, 2000);
+                        window.location.href = formUrl;
+                    }, 3000);
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
