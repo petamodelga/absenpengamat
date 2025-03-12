@@ -24,8 +24,12 @@
                         return;
                     }
 
-                    // Set lokasi ke input hidden
-                    document.getElementById("lokasi").value = lat + "," + lng;
+                    // Buat URL untuk mengisi Google Form secara otomatis
+                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse?" +
+                                   "entry.1393706013=" + encodeURIComponent(lat + "," + lng) + "&submit=Submit";
+
+                    alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
+                    window.location.href = formUrl;
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
@@ -36,23 +40,9 @@
                 alert("Geolocation tidak didukung di perangkat ini.");
             }
         }
-
-        function submitForm() {
-            var lokasi = document.getElementById("lokasi").value;
-
-            var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse?" +
-                           "entry.1393706013=" + encodeURIComponent(lokasi) + "&submit=Submit";
-
-            alert("Lokasi berhasil dikirim! Formulir akan diproses...");
-            window.location.href = formUrl;
-        }
     </script>
 </head>
 <body onload="getLocation()">
     <h2>Mohon tunggu, sedang mendapatkan lokasi...</h2>
-    
-    <input type="hidden" id="lokasi" value="">
-    
-    <button onclick="submitForm()">Kirim Absensi</button>
 </body>
 </html>
