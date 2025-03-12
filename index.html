@@ -2,14 +2,6 @@
 <html>
 <head>
     <title>Absensi Otomatis - Anti Fake GPS</title>
-    <style>
-        iframe {
-            width: 100%;
-            height: 600px;
-            border: none;
-            display: none; /* Awalnya disembunyikan */
-        }
-    </style>
     <script>
         function clearLocationCache() {
             navigator.geolocation.getCurrentPosition(() => {}, () => {}, { timeout: 0 });
@@ -32,13 +24,20 @@
                         return;
                     }
 
-                    // Buat URL untuk mengisi Google Form secara otomatis
+                    // Buat URL untuk mengisi Google Form secara otomatis (Pre-Filled)
                     var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse?" +
                                    "entry.1393706013=" + encodeURIComponent(lat + "," + lng) + "&submit=Submit";
 
-                    // Set iframe agar form otomatis dikirim
-                    document.getElementById("formFrame").src = formUrl;
-                    document.getElementById("formFrame").style.display = "block"; // Tampilkan iframe
+                    // Buat iframe untuk mengirim form secara otomatis tanpa bisa diedit
+                    var iframe = document.createElement("iframe");
+                    iframe.style.width = "0px";
+                    iframe.style.height = "0px";
+                    iframe.style.border = "none";
+                    iframe.src = formUrl;
+
+                    document.body.appendChild(iframe);
+
+                    alert("Lokasi berhasil dikirim! Absensi berhasil.");
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
@@ -53,6 +52,5 @@
 </head>
 <body onload="getLocation()">
     <h2>Mohon tunggu, sedang mendapatkan lokasi...</h2>
-    <iframe id="formFrame" src=""></iframe> <!-- Iframe untuk Google Form -->
 </body>
 </html>
