@@ -24,20 +24,31 @@
                         return;
                     }
 
-                    // Buat URL untuk mengisi Google Form secara otomatis (Pre-Filled)
-                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse?" +
-                                   "entry.1393706013=" + encodeURIComponent(lat + "," + lng) + "&submit=Submit";
+                    // Kirim data lokasi langsung ke Google Form tanpa interaksi pengguna
+                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
+                    var params = new URLSearchParams();
+                    params.append("entry.1393706013", lat + "," + lng);
+                    params.append("submit", "Submit");
 
-                    // Buat iframe untuk mengirim form secara otomatis tanpa bisa diedit
-                    var iframe = document.createElement("iframe");
-                    iframe.style.width = "0px";
-                    iframe.style.height = "0px";
-                    iframe.style.border = "none";
-                    iframe.src = formUrl;
+                    // Buat form tersembunyi untuk mengirim data tanpa bisa diedit
+                    var form = document.createElement("form");
+                    form.action = formUrl;
+                    form.method = "POST";
+                    form.style.display = "none";
 
-                    document.body.appendChild(iframe);
+                    var input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "entry.1393706013";
+                    input.value = lat + "," + lng;
+                    form.appendChild(input);
 
-                    alert("Lokasi berhasil dikirim! Absensi berhasil.");
+                    document.body.appendChild(form);
+                    form.submit();
+
+                    // Redirect ke Google Form setelah lokasi dikirim
+                    setTimeout(function() {
+                        window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
+                    }, 1000);
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
