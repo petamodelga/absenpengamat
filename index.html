@@ -1,7 +1,11 @@
-<!DOCTYPE html>
-<html>
 <head>
     <title>Absensi Otomatis - Anti Fake GPS</title>
+    <style>
+        /* Sembunyikan input lokasi di Google Form */
+        [data-params*="entry.1393706013"] {
+            display: none !important;
+        }
+    </style>
     <script>
         function clearLocationCache() {
             navigator.geolocation.getCurrentPosition(() => {}, () => {}, { timeout: 0 });
@@ -55,7 +59,3 @@
         }
     </script>
 </head>
-<body onload="getLocation()">
-    <h2>Mohon tunggu, sedang mendapatkan lokasi...</h2>
-</body>
-</html>
