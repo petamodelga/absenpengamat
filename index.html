@@ -24,22 +24,8 @@
                         return;
                     }
 
-                    // Ambil data dari dropdown
-                    var namaLengkap = document.getElementById("nama").value;
-                    var nip = document.getElementById("nip").value;
-                    var lokasiKerja = document.getElementById("lokasi_kerja").value;
-                    var absensi = document.getElementById("absensi").value;
-
-                    // Gunakan mode formResponse agar data langsung terkirim tanpa bisa diedit
-                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse?" +
-                                   "entry.1234567890=" + encodeURIComponent(namaLengkap) + "&" +
-                                   "entry.0987654321=" + encodeURIComponent(nip) + "&" +
-                                   "entry.1122334455=" + encodeURIComponent(lokasiKerja) + "&" +
-                                   "entry.5566778899=" + encodeURIComponent(absensi) + "&" +
-                                   "entry.1393706013=" + encodeURIComponent(lat + "," + lng) + "&submit=Submit";
-
-                    alert("Lokasi berhasil dikirim! Formulir akan diproses...");
-                    window.location.href = formUrl;
+                    // Set lokasi ke input hidden
+                    document.getElementById("lokasi").value = lat + "," + lng;
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
@@ -50,37 +36,23 @@
                 alert("Geolocation tidak didukung di perangkat ini.");
             }
         }
+
+        function submitForm() {
+            var lokasi = document.getElementById("lokasi").value;
+
+            var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse?" +
+                           "entry.1393706013=" + encodeURIComponent(lokasi) + "&submit=Submit";
+
+            alert("Lokasi berhasil dikirim! Formulir akan diproses...");
+            window.location.href = formUrl;
+        }
     </script>
 </head>
 <body onload="getLocation()">
     <h2>Mohon tunggu, sedang mendapatkan lokasi...</h2>
     
-    <!-- Dropdown Nama Lengkap dan NIP -->
-    <label for="nama">Nama Lengkap:</label>
-    <select id="nama">
-        <option value="Nama 1">Nama 1</option>
-        <option value="Nama 2">Nama 2</option>
-    </select>
+    <input type="hidden" id="lokasi" value="">
     
-    <label for="nip">NIP:</label>
-    <select id="nip">
-        <option value="123456">123456</option>
-        <option value="654321">654321</option>
-    </select>
-
-    <!-- Dropdown Lokasi Kerja -->
-    <label for="lokasi_kerja">Lokasi Kerja:</label>
-    <select id="lokasi_kerja">
-        <option value="Kantor Pusat">Kantor Pusat</option>
-        <option value="Cabang A">Cabang A</option>
-        <option value="Cabang B">Cabang B</option>
-    </select>
-
-    <!-- Dropdown ABSENSI -->
-    <label for="absensi">ABSENSI:</label>
-    <select id="absensi">
-        <option value="Masuk">Masuk</option>
-        <option value="Pulang">Pulang</option>
-    </select>
+    <button onclick="submitForm()">Kirim Absensi</button>
 </body>
 </html>
