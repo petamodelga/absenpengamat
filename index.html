@@ -19,38 +19,42 @@
                     console.log("Latitude: " + lat + ", Longitude: " + lng + ", Accuracy: " + accuracy);
 
                     // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
-                    var locationStatus = (accuracy > 100) ? "❌ Lokasi Diedit Manual" : "✅ Lokasi Valid";
                     if (accuracy > 100) {
                         alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).\nSilakan coba lagi.");
                         return;
                     }
 
-                    // Pastikan kolom lokasi masuk ke kolom ke-10 di spreadsheet
-                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform?usp=pp_url"
-                                + "&entry.1393706013=" + encodeURIComponent(lat + "," + lng)  // Kolom Lokasi
-                                + "&entry.9876543210=" + encodeURIComponent(locationStatus); // Kolom ke-10 untuk notifikasi
+                    // Buat form tersembunyi untuk mengirim lokasi
+                    var form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
+                    form.style.display = "none";
 
-                    alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
-                    window.location.href = formUrl;
+                    var lokasiInput = document.createElement("input");
+                    lokasiInput.type = "hidden";
+                    lokasiInput.name = "entry.1393706013";
+                    lokasiInput.value = lat + "," + lng;
+                    form.appendChild(lokasiInput);
+
+                    // Tambahkan notifikasi jika lokasi diedit manual
+                    var manualEditInput = document.createElement("input");
+                    manualEditInput.type = "hidden";
+                    manualEditInput.name = "entry.9999999999"; // Gantilah dengan entry ID yang sesuai
+                    manualEditInput.value = "✔ Lokasi Otomatis";
+                    form.appendChild(manualEditInput);
+
+                    document.body.appendChild(form);
+                    form.submit(); // Kirim otomatis
+                    
+                    // Redirect ke Google Form setelah submit
+                    setTimeout(function() {
+                        window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
+                    }, 2000);
                 }, function(error) {
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            alert("Gagal mendapatkan lokasi: Izin lokasi ditolak oleh pengguna.");
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            alert("Gagal mendapatkan lokasi: Informasi lokasi tidak tersedia.");
-                            break;
-                        case error.TIMEOUT:
-                            alert("Gagal mendapatkan lokasi: Waktu permintaan habis. Coba lagi di area dengan sinyal lebih baik.");
-                            break;
-                        case error.UNKNOWN_ERROR:
-                            alert("Gagal mendapatkan lokasi: Kesalahan yang tidak diketahui.");
-                            break;
-                    }
+                    alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
                     maximumAge: 0, // Pastikan selalu mendapatkan lokasi terbaru
-                    timeout: 30000, // Perpanjang batas waktu hingga 30 detik
-                    enableHighAccuracy: true // Gunakan akurasi tinggi jika memungkinkan
+                    timeout: 10000 // Beri batas waktu untuk mendapatkan lokasi
                 });
             } else {
                 alert("Geolocation tidak didukung di perangkat ini.");
