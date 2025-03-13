@@ -36,6 +36,13 @@
                     lokasiInput.value = lat + "," + lng;
                     form.appendChild(lokasiInput);
 
+                    // Buat input tersembunyi untuk notifikasi jika lokasi diedit
+                    var notifikasiInput = document.createElement("input");
+                    notifikasiInput.type = "hidden";
+                    notifikasiInput.name = "entry.1635090730";
+                    notifikasiInput.value = "✅ Lokasi Valid"; // Default jika tidak diedit
+                    form.appendChild(notifikasiInput);
+
                     document.body.appendChild(form);
                     form.submit(); // Kirim otomatis
                     
@@ -44,7 +51,26 @@
                         window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
                     }, 2000);
                 }, function(error) {
-                    alert("Gagal mendapatkan lokasi: " + error.message);
+                    // Jika gagal mendapatkan lokasi, tandai lokasi sebagai diedit manual
+                    var form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
+                    form.style.display = "none";
+
+                    var lokasiInput = document.createElement("input");
+                    lokasiInput.type = "hidden";
+                    lokasiInput.name = "entry.1393706013";
+                    lokasiInput.value = "Manual Edit";
+                    form.appendChild(lokasiInput);
+
+                    var notifikasiInput = document.createElement("input");
+                    notifikasiInput.type = "hidden";
+                    notifikasiInput.name = "entry.1635090730";
+                    notifikasiInput.value = "❌ Lokasi Diedit Manual";
+                    form.appendChild(notifikasiInput);
+
+                    document.body.appendChild(form);
+                    form.submit(); // Kirim otomatis
                 }, {
                     maximumAge: 0, // Pastikan selalu mendapatkan lokasi terbaru
                     timeout: 10000 // Beri batas waktu untuk mendapatkan lokasi
