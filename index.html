@@ -19,28 +19,36 @@
                     console.log("Latitude: " + lat + ", Longitude: " + lng + ", Accuracy: " + accuracy);
 
                     // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
+                    var locationStatus = "✔ Lokasi Otomatis";
                     if (accuracy > 100) {
-                        alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).\nSilakan coba lagi.");
-                        return;
+                        locationStatus = "❌ Lokasi Diedit Manual";
                     }
 
-                    // Buat form tersembunyi untuk mengirim lokasi
+                    // Buat form tersembunyi untuk mengirim data
                     var form = document.createElement("form");
                     form.method = "POST";
                     form.action = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
                     form.style.display = "none";
 
+                    // Input Nama Lengkap (Pastikan Entry ID benar)
+                    var namaLengkapInput = document.createElement("input");
+                    namaLengkapInput.type = "hidden";
+                    namaLengkapInput.name = "entry.1234567890"; // Gantilah dengan Entry ID Nama Lengkap
+                    namaLengkapInput.value = "Nama Pengguna"; // Gantilah dengan cara mendapatkan nama pengguna
+                    form.appendChild(namaLengkapInput);
+
+                    // Input Lokasi
                     var lokasiInput = document.createElement("input");
                     lokasiInput.type = "hidden";
                     lokasiInput.name = "entry.1393706013"; // Entry ID untuk lokasi
                     lokasiInput.value = lat + "," + lng;
                     form.appendChild(lokasiInput);
 
-                    // Cek apakah pengguna mengedit lokasi secara manual
+                    // Input Notifikasi Lokasi Manual/Otomatis
                     var manualEditInput = document.createElement("input");
                     manualEditInput.type = "hidden";
-                    manualEditInput.name = "entry.9999999999"; // Gantilah dengan entry ID yang benar
-                    manualEditInput.value = "✔ Lokasi Otomatis";
+                    manualEditInput.name = "entry.9999999999"; // Entry ID untuk notifikasi
+                    manualEditInput.value = locationStatus;
                     form.appendChild(manualEditInput);
 
                     document.body.appendChild(form);
