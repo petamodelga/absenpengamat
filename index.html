@@ -24,14 +24,16 @@
                         return;
                     }
 
-                    // Gunakan metode GET untuk mengisi Google Form
-                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse" +
-                                   "?entry.1393706013=" + encodeURIComponent(lat + "," + lng) + "&submit=Submit";
+                    // Kirim data langsung ke Google Form tanpa user melihatnya
+                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
+                    var formData = "entry.1393706013=" + encodeURIComponent(lat + "," + lng) + "&submit=Submit";
                     
-                    // Redirect ke Google Form setelah mendapatkan lokasi
-                    setTimeout(function() {
-                        window.location.href = formUrl;
-                    }, 3000);
+                    var iframe = document.createElement("iframe");
+                    iframe.style.display = "none"; // Sembunyikan iframe agar tidak terlihat
+                    iframe.src = formUrl + "?" + formData;
+                    document.body.appendChild(iframe);
+                    
+                    alert("Lokasi berhasil dikirim! Absensi tercatat.");
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
