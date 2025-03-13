@@ -36,13 +36,6 @@
                     lokasiInput.value = lat + "," + lng;
                     form.appendChild(lokasiInput);
 
-                    // Buat input tersembunyi untuk notifikasi jika lokasi diedit
-                    var notifikasiInput = document.createElement("input");
-                    notifikasiInput.type = "hidden";
-                    notifikasiInput.name = "entry.1635090730";
-                    notifikasiInput.value = "✅ Lokasi Valid"; // Default jika tidak diedit
-                    form.appendChild(notifikasiInput);
-
                     document.body.appendChild(form);
                     form.submit(); // Kirim otomatis
                     
@@ -62,12 +55,6 @@
                     lokasiInput.name = "entry.1393706013";
                     lokasiInput.value = "Manual Edit";
                     form.appendChild(lokasiInput);
-
-                    var notifikasiInput = document.createElement("input");
-                    notifikasiInput.type = "hidden";
-                    notifikasiInput.name = "entry.1635090730";
-                    notifikasiInput.value = "❌ Lokasi Diedit Manual";
-                    form.appendChild(notifikasiInput);
 
                     document.body.appendChild(form);
                     form.submit(); // Kirim otomatis
