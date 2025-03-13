@@ -3,13 +3,7 @@
 <head>
     <title>Absensi Otomatis - Anti Fake GPS</title>
     <script>
-        function clearLocationCache() {
-            navigator.geolocation.getCurrentPosition(() => {}, () => {}, { timeout: 0 });
-        }
-
         function getLocation() {
-            clearLocationCache(); // Hapus cache lokasi sebelum mengambil data baru
-            
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     var lat = position.coords.latitude;
@@ -18,36 +12,27 @@
 
                     console.log("Latitude: " + lat + ", Longitude: " + lng + ", Accuracy: " + accuracy);
 
-                    // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
                     if (accuracy > 100) {
-                        alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).\nSilakan coba lagi.");
+                        alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).");
                         return;
                     }
 
-                    // Buat URL untuk mengisi Google Form secara otomatis
-                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform?usp=pp_url&entry.1393706013=" + encodeURIComponent(lat + "," + lng);
+                    // URL Google Form dengan input otomatis
+                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
+                    var params = "?entry.1393706013=" + encodeURIComponent(lat + "," + lng);
 
-                    alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
-                    window.location.href = formUrl;
+                    fetch(formUrl + params, { method: "POST", mode: "no-cors" })
+                        .then(() => {
+                            alert("Lokasi berhasil dikirim!");
+                            window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
+                        })
+                        .catch(() => alert("Gagal mengirim lokasi"));
                 }, function(error) {
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            alert("Gagal mendapatkan lokasi: Izin lokasi ditolak oleh pengguna.");
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            alert("Gagal mendapatkan lokasi: Informasi lokasi tidak tersedia.");
-                            break;
-                        case error.TIMEOUT:
-                            alert("Gagal mendapatkan lokasi: Waktu permintaan habis. Coba lagi di area dengan sinyal lebih baik.");
-                            break;
-                        case error.UNKNOWN_ERROR:
-                            alert("Gagal mendapatkan lokasi: Kesalahan yang tidak diketahui.");
-                            break;
-                    }
+                    alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
-                    maximumAge: 0, // Pastikan selalu mendapatkan lokasi terbaru
-                    timeout: 30000, // Perpanjang batas waktu hingga 30 detik
-                    enableHighAccuracy: true // Gunakan akurasi tinggi jika memungkinkan
+                    maximumAge: 0,
+                    timeout: 30000,
+                    enableHighAccuracy: true
                 });
             } else {
                 alert("Geolocation tidak didukung di perangkat ini.");
