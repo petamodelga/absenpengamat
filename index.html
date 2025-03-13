@@ -30,10 +30,24 @@
                     alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
                     window.location.href = formUrl;
                 }, function(error) {
-                    alert("Gagal mendapatkan lokasi: " + error.message);
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            alert("Gagal mendapatkan lokasi: Izin lokasi ditolak oleh pengguna.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            alert("Gagal mendapatkan lokasi: Informasi lokasi tidak tersedia.");
+                            break;
+                        case error.TIMEOUT:
+                            alert("Gagal mendapatkan lokasi: Waktu permintaan habis. Coba lagi di area dengan sinyal lebih baik.");
+                            break;
+                        case error.UNKNOWN_ERROR:
+                            alert("Gagal mendapatkan lokasi: Kesalahan yang tidak diketahui.");
+                            break;
+                    }
                 }, {
                     maximumAge: 0, // Pastikan selalu mendapatkan lokasi terbaru
-                    timeout: 10000 // Beri batas waktu untuk mendapatkan lokasi
+                    timeout: 30000, // Perpanjang batas waktu hingga 30 detik
+                    enableHighAccuracy: true // Gunakan akurasi tinggi jika memungkinkan
                 });
             } else {
                 alert("Geolocation tidak didukung di perangkat ini.");
