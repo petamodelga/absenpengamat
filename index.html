@@ -11,7 +11,7 @@
             clearLocationCache(); // Hapus cache lokasi sebelum mengambil data baru
             
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async function(position) {
+                navigator.geolocation.getCurrentPosition(function(position) {
                     var lat = position.coords.latitude;
                     var lng = position.coords.longitude;
                     var accuracy = position.coords.accuracy;
@@ -24,25 +24,11 @@
                         return;
                     }
 
-                    // Kirim data langsung ke Google Form dengan fetch()
-                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
-                    var formData = new URLSearchParams();
-                    formData.append("entry.1393706013", lat + "," + lng);
-                    formData.append("submit", "Submit");
+                    // Buat URL untuk mengisi Google Form secara otomatis
+                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform?usp=pp_url&entry.1393706013=" + encodeURIComponent(lat + "," + lng);
 
-                    try {
-                        let response = await fetch(formUrl, {
-                            method: "POST",
-                            mode: "no-cors",
-                            headers: {
-                                "Content-Type": "application/x-www-form-urlencoded"
-                            },
-                            body: formData.toString()
-                        });
-                        alert("Lokasi berhasil dikirim! Absensi tercatat.");
-                    } catch (error) {
-                        alert("Gagal mengirim data: " + error.message);
-                    }
+                    alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
+                    window.location.href = formUrl;
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
