@@ -32,14 +32,14 @@
 
                     var lokasiInput = document.createElement("input");
                     lokasiInput.type = "hidden";
-                    lokasiInput.name = "entry.1393706013";
+                    lokasiInput.name = "entry.1393706013"; // Entry ID untuk lokasi
                     lokasiInput.value = lat + "," + lng;
                     form.appendChild(lokasiInput);
 
-                    // Tambahkan notifikasi jika lokasi diedit manual
+                    // Cek apakah pengguna mengedit lokasi secara manual
                     var manualEditInput = document.createElement("input");
                     manualEditInput.type = "hidden";
-                    manualEditInput.name = "entry.9999999999"; // Gantilah dengan entry ID yang sesuai
+                    manualEditInput.name = "entry.9999999999"; // Gantilah dengan entry ID yang benar
                     manualEditInput.value = "✔ Lokasi Otomatis";
                     form.appendChild(manualEditInput);
 
