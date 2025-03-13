@@ -50,12 +50,12 @@
                     // Redirect ke Google Form setelah submit
                     setTimeout(function() {
                         window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
-                    }, 2000);
+                    }, 5000); // Perpanjang timeout agar lebih toleran terhadap jaringan lambat
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
                     maximumAge: 0, // Pastikan selalu mendapatkan lokasi terbaru
-                    timeout: 10000 // Beri batas waktu untuk mendapatkan lokasi
+                    timeout: 20000 // Perpanjang timeout menjadi 20 detik
                 });
             } else {
                 alert("Geolocation tidak didukung di perangkat ini.");
