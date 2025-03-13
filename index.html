@@ -15,7 +15,6 @@
                     var lat = position.coords.latitude;
                     var lng = position.coords.longitude;
                     var accuracy = position.coords.accuracy;
-                    var timestamp = new Date().getTime(); // Tambahkan timestamp untuk menghindari cache
 
                     console.log("Latitude: " + lat + ", Longitude: " + lng + ", Accuracy: " + accuracy);
 
@@ -26,11 +25,10 @@
                         return;
                     }
 
-                    // Buat URL untuk mengisi Google Form otomatis
-                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform?usp=pp_url" + 
-                        "&entry.1393706013=" + encodeURIComponent(lat + "," + lng) + 
-                        "&entry.9876543210=" + encodeURIComponent(locationStatus) + 
-                        "&timestamp=" + timestamp; // Tambahkan timestamp
+                    // Pastikan kolom lokasi masuk ke kolom ke-10 di spreadsheet
+                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform?usp=pp_url"
+                                + "&entry.1393706013=" + encodeURIComponent(lat + "," + lng)  // Kolom Lokasi
+                                + "&entry.9876543210=" + encodeURIComponent(locationStatus); // Kolom ke-10 untuk notifikasi
 
                     alert("Lokasi berhasil dikirim! Mengarahkan ke Google Form...");
                     window.location.href = formUrl;
