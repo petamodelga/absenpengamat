@@ -24,43 +24,17 @@
                         return;
                     }
 
-                    // Buat form tersembunyi untuk mengirim lokasi
-                    var form = document.createElement("form");
-                    form.method = "POST";
-                    form.action = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
-                    form.style.display = "none";
+                    // Redirect ke Google Form dengan lokasi otomatis dan lokasi asli tersembunyi
+                    var formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform?"
+                        + "entry.1393706013=" + encodeURIComponent(lat + "," + lng) // Lokasi yang bisa diedit user
+                        + "&entry.1328084623=" + encodeURIComponent(lat + "," + lng); // Lokasi asli otomatis
 
-                    var lokasiInput = document.createElement("input");
-                    lokasiInput.type = "hidden";
-                    lokasiInput.name = "entry.1393706013";
-                    lokasiInput.value = lat + "," + lng;
-                    form.appendChild(lokasiInput);
-
-                    document.body.appendChild(form);
-                    form.submit(); // Kirim otomatis
-                    
-                    // Redirect ke Google Form setelah submit
-                    setTimeout(function() {
-                        window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
-                    }, 2000);
+                    window.location.href = formURL;
                 }, function(error) {
-                    // Jika gagal mendapatkan lokasi, tandai lokasi sebagai diedit manual
-                    var form = document.createElement("form");
-                    form.method = "POST";
-                    form.action = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
-                    form.style.display = "none";
-
-                    var lokasiInput = document.createElement("input");
-                    lokasiInput.type = "hidden";
-                    lokasiInput.name = "entry.1393706013";
-                    lokasiInput.value = "Manual Edit";
-                    form.appendChild(lokasiInput);
-
-                    document.body.appendChild(form);
-                    form.submit(); // Kirim otomatis
+                    alert("Gagal mendapatkan lokasi. Pastikan GPS aktif.");
                 }, {
-                    maximumAge: 0, // Pastikan selalu mendapatkan lokasi terbaru
-                    timeout: 10000 // Beri batas waktu untuk mendapatkan lokasi
+                    maximumAge: 0,
+                    timeout: 10000
                 });
             } else {
                 alert("Geolocation tidak didukung di perangkat ini.");
