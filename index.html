@@ -1,44 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Absensi Otomatis</title>
+    <title>Absensi Otomatis - Anti Fake GPS</title>
     <script>
-        function getLocation() {
-            if (!navigator.geolocation) {
-                alert("Geolocation tidak didukung oleh browser ini.");
-                return;
-            }
+        function clearLocationCache() {
+            navigator.geolocation.getCurrentPosition(() => {}, () => {}, { timeout: 0 });
+        }
 
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
+        function getLocation() {
+            clearLocationCache(); // Hapus cache lokasi sebelum mengambil data baru
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
                     var lat = position.coords.latitude;
                     var lng = position.coords.longitude;
+                    var accuracy = position.coords.accuracy;
 
-                    console.log("Latitude: " + lat + ", Longitude: " + lng);
+                    console.log("Latitude: " + lat + ", Longitude: " + lng + ", Accuracy: " + accuracy);
 
-                    // Redirect ke Google Form dengan Pre-filled Data
-                    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
-                    var filledUrl = formUrl + "?entry.1328084623=" + encodeURIComponent(lat + "," + lng);
-
-                    window.location.href = filledUrl;
-                },
-                function(error) {
-                    switch (error.code) {
-                        case error.PERMISSION_DENIED:
-                            alert("Izin lokasi ditolak. Harap aktifkan lokasi dan coba lagi.");
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            alert("Informasi lokasi tidak tersedia.");
-                            break;
-                        case error.TIMEOUT:
-                            alert("Waktu permintaan lokasi habis.");
-                            break;
-                        case error.UNKNOWN_ERROR:
-                            alert("Terjadi kesalahan yang tidak diketahui.");
-                            break;
+                    // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
+                    if (accuracy > 100) {
+                        alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).\nSilakan coba lagi.");
+                        return;
                     }
-                }
-            );
+
+                    // Buat form tersembunyi untuk mengirim lokasi
+                    var form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
+                    form.style.display = "none";
+
+                    var lokasiInput = document.createElement("input");
+                    lokasiInput.type = "hidden";
+                    lokasiInput.name = "entry.1393706013";
+                    lokasiInput.value = lat + "," + lng;
+                    form.appendChild(lokasiInput);
+
+                    document.body.appendChild(form);
+                    form.submit(); // Kirim otomatis
+                    
+                    // Redirect ke Google Form setelah submit
+                    setTimeout(function() {
+                        window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
+                    }, 2000);
+                }, function(error) {
+                    alert("Gagal mendapatkan lokasi: " + error.message);
+                }, {
+                    maximumAge: 0, // Pastikan selalu mendapatkan lokasi terbaru
+                    timeout: 10000 // Beri batas waktu untuk mendapatkan lokasi
+                });
+            } else {
+                alert("Geolocation tidak didukung di perangkat ini.");
+            }
         }
     </script>
 </head>
