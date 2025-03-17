@@ -4,8 +4,13 @@
     <title>Absensi Otomatis</title>
     <script>
         function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
+            if (!navigator.geolocation) {
+                alert("Geolocation tidak didukung oleh browser ini.");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
                     var lat = position.coords.latitude;
                     var lng = position.coords.longitude;
 
@@ -13,15 +18,27 @@
 
                     // Redirect ke Google Form dengan Pre-filled Data
                     var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
-                    var filledUrl = formUrl + "?entry.1328084623=" + lat + "," + lng;
+                    var filledUrl = formUrl + "?entry.1328084623=" + encodeURIComponent(lat + "," + lng);
 
-                    window.location.href = filledUrl; // Buka Form dengan lokasi otomatis
-                }, function(error) {
-                    alert("Gagal mendapatkan lokasi. Coba lagi.");
-                });
-            } else {
-                alert("Geolocation tidak didukung.");
-            }
+                    window.location.href = filledUrl;
+                },
+                function(error) {
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            alert("Izin lokasi ditolak. Harap aktifkan lokasi dan coba lagi.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            alert("Informasi lokasi tidak tersedia.");
+                            break;
+                        case error.TIMEOUT:
+                            alert("Waktu permintaan lokasi habis.");
+                            break;
+                        case error.UNKNOWN_ERROR:
+                            alert("Terjadi kesalahan yang tidak diketahui.");
+                            break;
+                    }
+                }
+            );
         }
     </script>
 </head>
