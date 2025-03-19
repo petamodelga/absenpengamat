@@ -3,13 +3,7 @@
 <head>
     <title>Absensi Otomatis - Anti Fake GPS</title>
     <script>
-        function clearLocationCache() {
-            navigator.geolocation.getCurrentPosition(() => {}, () => {}, { timeout: 0 });
-        }
-
         function getLocation() {
-            clearLocationCache(); // Hapus cache lokasi sebelum mengambil data baru
-            
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     var lat = position.coords.latitude;
@@ -18,13 +12,14 @@
 
                     console.log("Latitude: " + lat + ", Longitude: " + lng + ", Accuracy: " + accuracy);
 
-                    // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
+                    // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi > 100m)
                     if (accuracy > 100) {
-                        alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).\nSilakan coba lagi.");
-                        return;
+                        if (!confirm("Deteksi Fake GPS: Akurasi terlalu rendah (" + accuracy + "m).\nLanjutkan?")) {
+                            return;
+                        }
                     }
 
-                    // Buat form tersembunyi untuk mengirim lokasi
+                    // Kirim lokasi ke Google Form
                     var form = document.createElement("form");
                     form.method = "POST";
                     form.action = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
@@ -32,22 +27,27 @@
 
                     var lokasiInput = document.createElement("input");
                     lokasiInput.type = "hidden";
-                    lokasiInput.name = "entry.1393706013";
+                    lokasiInput.name = "entry.1393706013"; // Pastikan ini sesuai dengan Google Form
                     lokasiInput.value = lat + "," + lng;
                     form.appendChild(lokasiInput);
 
+                    var submitBtn = document.createElement("input");
+                    submitBtn.type = "submit";
+                    form.appendChild(submitBtn);
+
                     document.body.appendChild(form);
-                    form.submit(); // Kirim otomatis
-                    
-                    // Redirect ke Google Form setelah submit
+                    submitBtn.click(); // Kirim form
+
+                    // Redirect ke Form setelah submit (opsional)
                     setTimeout(function() {
                         window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
                     }, 2000);
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
-                    maximumAge: 0, // Pastikan selalu mendapatkan lokasi terbaru
-                    timeout: 10000 // Beri batas waktu untuk mendapatkan lokasi
+                    enableHighAccuracy: true, // Gunakan GPS terbaik
+                    maximumAge: 0, // Pastikan lokasi terbaru
+                    timeout: 10000 // Waktu maksimal mendapatkan lokasi
                 });
             } else {
                 alert("Geolocation tidak didukung di perangkat ini.");
