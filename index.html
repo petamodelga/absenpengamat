@@ -8,7 +8,7 @@
         }
 
         function getLocation() {
-            clearLocationCache(); // Hapus cache lokasi sebelum mengambil data baru
+            clearLocationCache();
             
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
@@ -18,7 +18,6 @@
 
                     console.log("Latitude: " + lat + ", Longitude: " + lng + ", Accuracy: " + accuracy);
 
-                    // Cek akurasi lokasi (Fake GPS biasanya memiliki akurasi rendah > 100m)
                     if (accuracy > 100) {
                         alert("Deteksi Fake GPS: Lokasi tidak valid (Akurasi terlalu rendah).\nSilakan coba lagi.");
                         return;
@@ -30,32 +29,31 @@
                     form.action = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/formResponse";
                     form.style.display = "none";
 
-                    // Entry untuk Koordinat Lokasi (Otomatis) (User bisa edit)
+                    // Input untuk "Koordinat Lokasi (Otomatis)"
                     var lokasiInput = document.createElement("input");
                     lokasiInput.type = "hidden";
                     lokasiInput.name = "entry.1393706013";
                     lokasiInput.value = lat + "," + lng;
                     form.appendChild(lokasiInput);
 
-                    // Entry untuk Koordinat Asli (Disembunyikan di Section 3)
+                    // Input untuk "Koordinat Asli" (Harus sama dengan otomatis)
                     var koordinatAsliInput = document.createElement("input");
                     koordinatAsliInput.type = "hidden";
-                    koordinatAsliInput.name = "entry.1328084623";
-                    koordinatAsliInput.value = lat + "," + lng; // Sama dengan koordinat otomatis
+                    koordinatAsliInput.name = "entry.1328084623"; // Sesuaikan dengan Google Form
+                    koordinatAsliInput.value = lat + "," + lng;
                     form.appendChild(koordinatAsliInput);
 
                     document.body.appendChild(form);
-                    form.submit(); // Kirim otomatis
+                    form.submit();
                     
-                    // Redirect ke Google Form setelah submit
                     setTimeout(function() {
                         window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdzyQ0vuFgunJ1GjjhdXSXU89TqBNv89WlqNVEa8Sbc7YKa_w/viewform";
                     }, 2000);
                 }, function(error) {
                     alert("Gagal mendapatkan lokasi: " + error.message);
                 }, {
-                    maximumAge: 0, // Pastikan selalu mendapatkan lokasi terbaru
-                    timeout: 10000 // Beri batas waktu untuk mendapatkan lokasi
+                    maximumAge: 0,
+                    timeout: 10000
                 });
             } else {
                 alert("Geolocation tidak didukung di perangkat ini.");
